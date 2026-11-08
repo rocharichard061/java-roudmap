@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import roadmap from '../src/data/roadmap.json' with {type:'json'};import {completed,monthCompleted,minutes,nextDay,parseBackup,backup,cleanState} from '../src/services/state.js';
+test('180 aulas reais, ids únicos, recursos seguros',()=>{assert.equal(roadmap.length,180);assert.deepEqual(roadmap.map(d=>d.id),Array.from({length:180},(_,i)=>i+1));assert.ok(roadmap.every(d=>d.title&&d.objective&&d.exercise&&d.resources[0]?.url.startsWith('https://www.youtube.com/')))});
+test('progresso e horas separadas de estimativas',()=>{let s=cleanState({progress:{1:{done:true},31:{done:true}},sessions:[{minutes:45,date:'2026-11-08'}]});assert.equal(completed(s),2);assert.equal(monthCompleted(s,1),1);assert.equal(nextDay(s),2);assert.equal(minutes(s),45)});
+test('backup validado',()=>{let s=cleanState({name:'Teste'});assert.equal(parseBackup(backup(s)).name,'Teste');assert.throws(()=>parseBackup('{"hi":true}'));});
